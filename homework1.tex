@@ -46,14 +46,30 @@
 	\begin{enumerate}
 	\item An $O(nm)$ algorithm for finding any occurrence of $s_1$ within $s_2$ with $k$ or fewer mismatched bits:\\
 		\begin{algorithmic}
-		\For{$i \leq len(word)$}
-			\If{$let \geq pi$}
-				\State $let \gets a$
+		\State $matchlocations \gets [ ]$
+		\State $i \gets 0$
+		\For{$i < n$}
+			\State $count \gets 0$
+			\State $j \gets 0$
+			\For{$j < m$}
+				\If {$s_2[i+j] != s_1[j]$}
+					\State $count++$
+				\EndIf
+				\State $j \gets j + 1$
+			\EndFor
+			\If {$count < k$}
+				\State $matchlocations \gets (matchlocations, i)$
 			\EndIf
 			\State $i \gets i + 1$
 		\EndFor
+		\State return $matchlocations$
 		\end{algorithmic}
 	\item An $O(n log n)$ algorithm for any k:
+		\begin{algorithmic}
+		\State $matchlocations \gets [ ]$
+		
+		\State return $matchlocations$
+		\end{algorithmic}
 	\end{enumerate}
 \item Sorting by Reversals
 	\begin{enumerate}
