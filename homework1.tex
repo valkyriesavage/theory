@@ -99,11 +99,18 @@
 		\EndFor
 		\State return $matchlocations$
 		\end{algorithmic}
-	\item TODO An $O(n log n)$ algorithm for any k:
+	\item An $O(n log n)$ algorithm for any $k$; we begin by replacing all $0$s with $-1$s, such that in convolution if two bits are the same their product is $1$, and if they differ their product is $-1$. This algorithm uses the idea that the inner product of a substring of $s_1$ and the string $s_2$ (with these replacements) will be maximized (maximum is $m$) if all bits are the same.  For each bit that is different, it reduces the inner product by $1$.  Therefore if less than $k$ bits are different, then the inner product of the two substrings will be $> m-k$:
 		\begin{algorithmic}
+		\State replace all $0$ in $s_1$ with $-1$
+		\State replace all $0$ in $s_2$ with $-1$
 		\State $matchlocations \gets [ ]$
-		
-		\State return $matchlocations$
+		\For{$idx = 1, 2, ... n-m$}
+			\State $innerproduct = \Call{FFT}{s_1 substring [idx:idx+m], s_2 }$
+			\If{$innerproduct > m-k$}
+				\State $matchlocations \gets [matchlocations, idx]$
+			\EndIf
+		\EndFor
+		\State \Return $matchlocations$
 		\end{algorithmic}
 	\end{enumerate}
 \item Sorting by Reversals
