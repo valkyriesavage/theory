@@ -14,8 +14,9 @@
 \begin{enumerate}
 \item Short answers
 	\begin{enumerate}
-	\item An asymptotically tight upper bound on the recurrence $T_1 = 4T_1 (n/3) + O(n^2 ), T_1 (1) = O(1)$ is $\Theta(n^2 )$.  For the recurrence $T_2 (n) - 27T_2 (n/3) + O(n^2 ), T_2 (1) = O(1)$, we also have the bound $\Theta(n^2 )$.
-	\item She can multiply $4x4$ matrices in 32 scalar multiplies ($2n^2$) and 67 additions and subtractions ($n^3+3$).  This means that the operation is $O(n^3 )$.
+	\item According to the \textbf{master theorem}: an asymptotically tight upper bound on the recurrence $T_1 = 4T_1 (n/3) + O(n^2 ), T_1 (1) = O(1)$ is $O(n^2 )$.  $T(n) = aT(\lceil n/b \rceil ) + O(n^d)$ ; a = 4, b = 3, d = 2 ; $T(n) = O(n^d)$ because $d>log_ba$ ($2 > log_3 2$).\\
+	For the recurrence $T_2 (n) - 27T_2 (n/3) + O(n^2 ), T_2 (1) = O(1)$, we have the bound $O(n^3 )$.  $T(n) = aT(\lceil n/b \rceil ) + O(n^d)$ ; a = 27, b = 3, d = 2 ; $T(n) = O(n^dlog_b a)$ because $d<log_b a$ ($2 < log_3 27$).
+	\item She can multiply $4x4$ matrices in 32 \emph{scalar} multiplies.  Let's assume that $n$ is a power of $4$.  This means that she can multiply two $nxn$ matrices (where $n$ is a power of $4$) in $32$ \emph{matrix} multiplies by cutting each of the two matrices into 16 $n/4 x n/4$ submatrices; these can be combined in $O(n^2)$ additions (this number comes from the fact that Volker Strassen could combine $n/2 x n/2$ submatrices with $O(n^2)$ additions).  This gives the recursion $T(n) = 32T(n/4) + O(n^2)$.  Using the same \textbf{master theorem} as above, we see that she can do $nxn$ matrix multiplications in $O(n^{log_4 32}) = O(n^{2.5})$.
 	\item Given an edge $e$ contained in the minimum cut of a max flow problem, by increasing the capacity of $e$ we don't necessarily increase the maximum flow.  The \textbf{max-flow min-cut theorem} states that the size of the maximum flow in a network equals the capacity of the smallest $(s,t)$ cut, however as a counterexample consider a network
 		\begin{tikzpicture}[->,>=stealth,shorten >=1pt,auto,node distance=3cm,
  		thick,main node/.style={circle,fill=blue!20,draw,font=\sffamily\Large\bfseries}]
@@ -32,52 +33,50 @@
     		(C) edge node [right] {1} (D);
 		\end{tikzpicture}\\
 		With edge $e$ as noted (connecting A to C), then $e$ can be part of a min cut.  The max flow of the system is currently 2.  However, if we increase $c(e)$ to 2, then the max flow of the system is still 2, and $e$ is no longer part of a min cut.
-	\item $max min(x+y,y+w,3x+w)\\x+y+w=1$
-	\item TODO
-	\item A is $C(e_I , f(t))$.\\B is $C(f(t), e_I)$.
-	\item TODO Assuming $f(x)$ is $O(1)$ and using $n$ to represent the number of intervals, the running time of the above dynamic program is $O(??)$.
+	\item Let $z=min(x+y,y+w,3x+w)$.  Then \\
+	max $z$\\
+	$x + y - z \geq 0 \\
+	y + w - z \geq 0\\
+	3x + w - z \geq 0\\
+	x + y + w = 1$ 
+	\item If we relax the integrality constraints, we can turn the integer linear program into a linear program.  Once we find the optimal solution to this linear program, we need to transform it into a valid vertex cover and show that it is a 2-approximation of the optimal.\\
+	To turn the optimal solution into a valid vertex cover, we can take all the vales of $x_u$ and round them to the nearest integer (i.e. $x_u \geq 1/2$ becomes $1$, $x_u < 1/2$ becomes $0$).  This will ensure a valid cover: if $x_u+x_v\geq 1$, $\Call{Round}{x_u} + \Call{Round}{x_v} \geq 1$, because at least one of $x_u$ or $x_v$ must be $\geq 1/2$.  Let's call the valid cover $C = {x_u \in V s.t. \Call{round}{x_u} = 1}$\\
+	This rounded optimal solution is a 2-approximation of the true optimal solution because its cost is $\sum\limits_{v \in C}^{} c(v) = \sum\limits_{v \in V}^{} c(v) * \Call{Round}{x_v} \leq \sum\limits_{v \in C}^{} c(v) * 2 * \Call{Unrounded}{x_v} = 2*(optimallinearsolution) \leq 2*(optimalvertexcover)$.
+	\item A is $C(f(s_I) , t) + v_I$.\\B is $C(t, f(s_I)) + v_I$.
+	\item Assuming $f(x)$ is $O(1)$ and using $n$ to represent the number of intervals, the running time of the above dynamic program is $O(n^2)$.
 	\end{enumerate}
 \item Point domination
 	\begin{enumerate}
-	\item An efficient ($O(n)$) algorithm to find all points of set $S$ which do not dominate any other point in $S$:
+	\item An efficient ($O(n^2)$) algorithm to find all points of set $S$ which do not dominate any other point in $S$:
 		\begin{algorithmic}
-		\State $(xlow_x, xlow_y) \gets (\infty, \infty)$
-		\State $(ylow_x, ylow_y) \gets (\infty, \infty)$
+		\State $nondominatingpoints \gets []$
 		\For{$p_i = (x_i , y_i ) \in S$}
-			\If{$x_i < xlow_x$}
-				\State $(xlow_x, xlow_y) \gets (x_i , y_i )$
+			\State $dominates \gets false$
+			\For{$p_j = (x_j, y_j) \in S - p_i$}
+				\If{$x_i > x_j $and $y_i > y_j$}
+					\State $dominates \gets true$
+				\EndIf
+			\EndFor
+			\If{$dominates$}
+				\State continue
 			\EndIf
-			\If{$y_i < ylow_y$}
-				\State $(ylow_x, ylow_y) \gets (x_i , y_i )$
-			\EndIf
-		\EndFor
-		\State $nondominatingpoints \gets [xlow , ylow]$
-		\For{$p_i = (x_i , y_i ) \in S$}
-			\If{$y_i < xlow_y$ or $x_i < ylow_x$}
-				\State $nondominatingpoints \gets [nondominatingpoints, p_i]$
-			\EndIf
+			\State $nondominatingpoints \gets [nondominatingpoints, p_i]$
 		\EndFor
 		\end{algorithmic}
-	\item TODO An efficient algorithm to find the largest subset of points $U \subset S$ where for each pair of points in $U$ neither dominates the other:
+	\item An efficient algorithm to find the largest subset of points $U \subset S$ where for each pair of points in $U$ neither dominates the other, the basic idea of which is to sort by increasing $x$, then create a DAG in which there are edges connecting from points of higher $y$ to points of lower $y$ (that still respect the sorted order), and then find the longest run of connected nodes, in the same manner as the longest increasing subsequence in a DAG:
 		\begin{algorithmic}
-		\State \# we define a utility function
-		\Function{ylessthan}{$p_i = (x_i , y_i ) , p_j = (x_j , y_j )$}
-			\If{$y_i < y_j$}
-				\Return 1
-			\Else{}
-				\Return 0
-			\EndIf
-		\EndFunction
 		\State \# we sort our points by increasing x using mergesort
 		\State \# which implementation we omit here
 		\State $P \gets mergesort(S)$
-		\For{$p_i \in P$}
-			\State $U(p_i) = 1 + max\{U(p_i-1 ) + $\Call{ylessthan}{$p_i$, $p_{i-1}$},\\
-			\indent\indent\indent\indent\indent\indent$U(p_i-2 ) + $\Call{ylessthan}{$p_i$, $p_{i-2}$}$\}$
+		\State $E \gets \{(p_i, p_j): p_i, p_j \in P, p_i[x] < p_j[x], p_i[y] < p_j[y]\}$
+		\For{$j = 1, 2, ..., n:$}
+			\State $L(j) = 1 + $max$\{L(i) : (i, j) \in E\}$
 		\EndFor
+		\State \Return max$_j L(j)$
 		\end{algorithmic}
 	\end{enumerate}
-\item Clauses TODO
+\item Clauses\\
+	 Intuitively, if we have $n$ true colors, we want to connect each clause vertex $v$ to $n$ other clauses which, if they were all satisfiable, would ensure that $v$ was not satisfiable.  For example, we could connect the vertex for clause $(x_i, x_j, \overline{x_k})$ to vertices representing $(x_i, x_j, x_k), (\overline{x_i}, x_j, \overline{x_k}), (x_i, \overline{x_j}, \overline{x_k}), (\overline{x_i}, \overline{x_j}, x_k)$ (or whatever subset thereof is contained in the set of clauses), because if all four of those clauses are satisfiable then $(x_i, x_j, \overline{x_k})$ is not.  In addition to those connections, we also want to connect $(x_i, x_j, \overline{x_k})$ to the example three-variable gadget at the vertices representing each of its component literals, i.e. $v_i, v_j, v_k '$, since the assignment of those variables as true or false also determines whether the clause is satisfiable.
 \item Pattern Subsequences
 	\begin{enumerate}
 	\item An $O(nm)$ algorithm for finding any occurrence of $s_1$ within $s_2$ with $k$ or fewer mismatched bits:
@@ -146,6 +145,7 @@
 		\State $\rho[\pi_i:j]$
 	\EndWhile
 	\end{algorithmic}
+	This algorithm resolves at least one breakpoint per two reversals: it finds the first $\pi_j = i$ that is not located at index $i$ in the list, then searches beyond it to see whether its proper neighbors follow; that is, what is the largest $k$ such that $\pi_{j+k} = i+k$ is true for $0, ..., k$.  It then performs $\rho(i, j+k)$ to get the long list of neighbors correctly situated in place from index $i$ to index $i+k$.  It then reverses that list, which resolves the breakpoint between $i+1$ and $i$, thereby solving at least one breakpoint in two reversals.  This means that this algorithm is within 4 of optimal, since $1/2$ breakpoint per reversal multiplied by $4$, is $2$ breakpoints per reversal.
 	\end{enumerate}
 \end{enumerate}
 \end{document}
