@@ -16,7 +16,7 @@
 	\begin{enumerate}
 	\item According to the \textbf{master theorem}: an asymptotically tight upper bound on the recurrence $T_1 = 4T_1 (n/3) + O(n^2 ), T_1 (1) = O(1)$ is $O(n^2 )$.  $T(n) = aT(\lceil n/b \rceil ) + O(n^d)$ ; a = 4, b = 3, d = 2 ; $T(n) = O(n^d)$ because $d>log_ba$ ($2 > log_3 2$).\\
 	For the recurrence $T_2 (n) - 27T_2 (n/3) + O(n^2 ), T_2 (1) = O(1)$, we have the bound $O(n^3 )$.  $T(n) = aT(\lceil n/b \rceil ) + O(n^d)$ ; a = 27, b = 3, d = 2 ; $T(n) = O(n^dlog_b a)$ because $d<log_b a$ ($2 < log_3 27$).
-	\item She can multiply $4x4$ matrices in 32 \emph{scalar} multiplies.  Let's assume that $n$ is a power of $4$.  This means that she can multiply two $nxn$ matrices (where $n$ is a power of $4$) in $32$ \emph{matrix} multiplies by cutting each of the two matrices into 16 $n/4 x n/4$ submatrices; these can be combined in $O(n^2)$ additions (this number comes from the fact that Volker Strassen could combine $n/2 x n/2$ submatrices with $O(n^2)$ additions).  This gives the recursion $T(n) = 32T(n/4) + O(n^2)$.  Using the same \textbf{master theorem} as above, we see that she can do $nxn$ matrix multiplications in $O(n^{log_4 32}) = O(n^{2.5})$.
+	\item She can multiply $4x4$ matrices in 32 \emph{scalar} multiplies.  Let's assume that $n$ is a power of $4$.  This means that she can multiply two $nxn$ matrices (where $n$ is a power of $4$) in $32$ \emph{matrix} multiplies by cutting each of the two matrices into 16 $\frac{n}{4} x \frac{n}{4}$ submatrices; these can be combined in $O(n^2)$ additions (this number comes from the fact that Volker Strassen could combine $\frac{n}{2} x \frac{n}{2}$ submatrices with $O(n^2)$ additions).  This gives the recursion $T(n) = 32T(\frac{n}{4}) + 67(O(\frac{n}{4})^2)$.  Using the same \textbf{master theorem} as above, we see that she can do $nxn$ matrix multiplications in $O(n^{log_4 32}) = O(n^{2.5})$.
 	\item Given an edge $e$ contained in the minimum cut of a max flow problem, by increasing the capacity of $e$ we don't necessarily increase the maximum flow.  The \textbf{max-flow min-cut theorem} states that the size of the maximum flow in a network equals the capacity of the smallest $(s,t)$ cut, however as a counterexample consider a network
 		\begin{tikzpicture}[->,>=stealth,shorten >=1pt,auto,node distance=3cm,
  		thick,main node/.style={circle,fill=blue!20,draw,font=\sffamily\Large\bfseries}]
@@ -43,27 +43,22 @@
 	To turn the optimal solution into a valid vertex cover, we can take all the vales of $x_u$ and round them to the nearest integer (i.e. $x_u \geq 1/2$ becomes $1$, $x_u < 1/2$ becomes $0$).  This will ensure a valid cover: if $x_u+x_v\geq 1$, $\Call{Round}{x_u} + \Call{Round}{x_v} \geq 1$, because at least one of $x_u$ or $x_v$ must be $\geq 1/2$.  Let's call the valid cover $C = {x_u \in V s.t. \Call{round}{x_u} = 1}$\\
 	This rounded optimal solution is a 2-approximation of the true optimal solution because its cost is $\sum\limits_{v \in C}^{} c(v) = \sum\limits_{v \in V}^{} c(v) * \Call{Round}{x_v} \leq \sum\limits_{v \in C}^{} c(v) * 2 * \Call{Unrounded}{x_v} = 2*(optimallinearsolution) \leq 2*(optimalvertexcover)$.
 	\item A is $C(f(s_I) , t) + v_I$.\\B is $C(t, f(s_I)) + v_I$.
-	\item Assuming $f(x)$ is $O(1)$ and using $n$ to represent the number of intervals, the running time of the above dynamic program is $O(n^2)$.
+	\item Assuming $f(x)$ is $O(1)$ and using $n$ to represent the number of intervals and $T$ to represent the finishing time of the last interval (a la the knapsack problem), the running time of the above dynamic program is $O(nT)$.
 	\end{enumerate}
 \item Point domination
 	\begin{enumerate}
-	\item An efficient ($O(n^2)$) algorithm to find all points of set $S$ which do not dominate any other point in $S$:
+	\item An efficient ($O(nlogn)$) algorithm to find all points of set $S$ which do not dominate any other point in $S$:
 		\begin{algorithmic}
 		\State $nondominatingpoints \gets []$
-		\For{$p_i = (x_i , y_i ) \in S$}
-			\State $dominates \gets false$
-			\For{$p_j = (x_j, y_j) \in S - p_i$}
-				\If{$x_i > x_j $and $y_i > y_j$}
-					\State $dominates \gets true$
-				\EndIf
-			\EndFor
-			\If{$dominates$}
-				\State continue
+		\State $points \gets \Call{mergesort}{points}$
+		\State $lowestX = (x_l, y_l) \gets points[0]$
+		\For{$p_i = (x_i , y_i ) \in points$}
+			\If{$y_i < x_l$}
+				\State $nondominatingpoints \gets [nondominatingpoints, p_i]$
 			\EndIf
-			\State $nondominatingpoints \gets [nondominatingpoints, p_i]$
 		\EndFor
 		\end{algorithmic}
-	\item An efficient algorithm to find the largest subset of points $U \subset S$ where for each pair of points in $U$ neither dominates the other, the basic idea of which is to sort by increasing $x$, then create a DAG in which there are edges connecting from points of higher $y$ to points of lower $y$ (that still respect the sorted order), and then find the longest run of connected nodes, in the same manner as the longest increasing subsequence in a DAG:
+	\item An efficient ($O(n^2)$) algorithm to find the largest subset of points $U \subset S$ where for each pair of points in $U$ neither dominates the other, the basic idea of which is to sort by increasing $x$, then create a DAG in which there are edges connecting from points of higher $y$ to points of lower $y$ (that still respect the sorted order), and then find the longest run of connected nodes, in the same manner as the longest increasing subsequence in a DAG:
 		\begin{algorithmic}
 		\State \# we sort our points by increasing x using mergesort
 		\State \# which implementation we omit here
@@ -76,7 +71,11 @@
 		\end{algorithmic}
 	\end{enumerate}
 \item Clauses\\
-	 Intuitively, if we have $n$ true colors, we want to connect each clause vertex $v$ to $n$ other clauses which, if they were all satisfiable, would ensure that $v$ was not satisfiable.  For example, we could connect the vertex for clause $(x_i, x_j, \overline{x_k})$ to vertices representing $(x_i, x_j, x_k), (\overline{x_i}, x_j, \overline{x_k}), (x_i, \overline{x_j}, \overline{x_k}), (\overline{x_i}, \overline{x_j}, x_k)$ (or whatever subset thereof is contained in the set of clauses), because if all four of those clauses are satisfiable then $(x_i, x_j, \overline{x_k})$ is not.  In addition to those connections, we also want to connect $(x_i, x_j, \overline{x_k})$ to the example three-variable gadget at the vertices representing \emph{the negation of} each of its component literals, i.e. $v_i ', v_j ', v_k$, since the assignment of those variables as true or false also determines whether the clause is satisfiable.  We attach to the negation because, for example in the case of $(x_i , x_j , x_k)$, we don't want three \emph{true} assignments to the literals to force the statement to be \emph{not satisfiable} by coloring.
+	  Intuitively, if we have $n$ true colors, we want to connect each clause vertex $v$ to $n$ other vertices which, if they were all satisfiable, would ensure that $v$ was not satisfiable.  We want to connect $(x_i, x_j, \overline{x_k})$ to the example three-variable gadget at the vertices representing \emph{the negation of} each of its component literals, i.e. $v_i ', v_j ', v_k$, since the assignment of those variables as true or false determines whether the clause is satisfiable.  We attach to the negation because, for example in the case of $(x_i , x_j , x_k)$, we don't want three \emph{true} assignments to the literals to force the statement to be \emph{not satisfiable} by coloring.  In this way, if a literal $x_i$ is true, since we have connected to $v_i '$ we can color clauses containing $x_i$ in the same true color as $v_i$.  We also want to attach to the $w_i$ of any literals that \emph{do not} appear in the clause.  There is a coloring in this scheme iff the clauses are satisfiable.
+	\begin{proof}
+		First, if a statement is satisfiable, then it has a coloring.  Given a statement $S$ consisting of clauses $c_1, ... c_n$ which are satisfiable, we connect it to the three-variable gadget as described above.  If a given clause $c_i$ is satisfiable, that means that it references one or more true literals, or the negation of false literals. WLOG assume it has a true literal $x_i$, which we have connected it to $v_i '$, which would have a false color.  Since $c_i$'s vertex is not connected to $v_i '$ or $w_i$ or any other clauses, it cannot be connected to anything which has the $i$th true color, which means that it can be colored true.  Therefore, a coloring exists if a statement is satisfiable.
+		If a coloring exists for a statement whose clauses are connected as above, then it is satisfiable.  Given a graph with vertices for clauses $c_1, ... c_n$, a clause $c_i$ will have a true color.  WLOG say it has the $k$th true color.  This means that it is not connected to any nodes with the $k$th true color: it is not connected to any other clause vertices, and it is also not connected to $v_k$ or $w_k$.  This means that it is connected to $v_k '$, which means that one of its literals is $x_k$, which must be true because $v_k '$ is colored false.
+	\end{proof}
 \item Pattern Subsequences
 	\begin{enumerate}
 	\item An $O(nm)$ algorithm for finding any occurrence of $s_1$ within $s_2$ with $k$ or fewer mismatched bits:
@@ -104,9 +103,9 @@
 		\State replace all $0$ in $s_1$ with $-1$
 		\State replace all $0$ in $s_2$ with $-1$
 		\State $matchlocations \gets [ ]$
+		\State $innerproduct = \Call{FFT-convolve}{s_1, s_2 }$
 		\For{$idx = 1, 2, ... n-m$}
-			\State $innerproduct = \Call{FFT}{s_1 substring [idx:idx+m], s_2 }$
-			\If{$innerproduct > m-k$}
+			\If{$innerproduct[idx] > m-k$}
 				\State $matchlocations \gets [matchlocations, idx]$
 			\EndIf
 		\EndFor
