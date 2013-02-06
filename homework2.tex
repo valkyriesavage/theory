@@ -2,6 +2,7 @@
 
 \usepackage{mathtools}
 \usepackage{amsthm}
+\usepackage{amssymb}
 \usepackage{tikz}
 \usepackage{algpseudocode}
 
@@ -43,16 +44,33 @@
         		edge node [left]  {$\frac{1}{2}$} (C)
     		(C) edge node [right] {$\frac{1}{2}$} (D);
 		\end{tikzpicture}\\
-	\item Write out 206 of 264 except less than.
+	\item This problem is very similar to proving the toll problem is the lower bound on the optimal solution to the path routing problem, so we will use similar conventions: $p_{ij}$ is a flow connecting $(s_i, t_i)$.  $c(e)$ is the congestion on edge $e$ under the routing.  The length of $p_{ij}$ is $d(p_{ij})$.  We proceed as in the integral problem, but the crux is that the lengths of the edges in a path do not necessarily add up to $1$: however, the sum of all the paths $p_{ij}$ connecting $(s_i, t_i)$ does.
+		\begin{align*}
+			\sum_{i}^{} \sum_{j}^{} d(p_{ij}) &= \sum_{i}^{} \sum_{j}^{} \sum_{e \in p_{ij}}^{} d(e) \\
+			&= \sum_{e}^{} \sum_{i,j:e \in p_{ij}}^{} d(e) \\
+			&= \sum_{e}^{} d(e) \sum_{i,j:e \in p_{ij}}^{} 1 \\
+			&= \sum_{e}^{} d(e)c(e)
+		\end{align*}
 	\end{enumerate}
-\item Equilibrium - pondered and completed but not written up as per instructions.
+\item Equilibrium - pondered and completed but not written up.
 \item Maximum weight matching vs. minimum weight vertex cover
 	\begin{enumerate}
-	\item Hi, an algorithm
+	\item Given $M$ a solution to the maximum weight matching problem and $p(\cdot)$ a solution to the minimum price vertex cover: $M=p(\cdot)$ iff the edges in the matching are tight and there is a perfect matching.  Both of these are satisfied, $\therefore M=p(\cdot)$.  When we increase the weight of an edge $(u,v)$ in our bipartite graph by $\delta$...
 	\begin{algorithmic}
-	\State $i \gets 3$
+	\State $p(u) \gets p(u) + \delta$
+	\If{$(u,v) \in M$}
+		\Return
+	\Else
+		\State find $(u, v_1) \in M$ where $p(u) + p(v_1) > (u, v_1)$
+		\State \# this must exist because we raised the price on $u$,
+		\State \# so some edge in the matching,
+		\State \# which does match $u$ because it is perfect,
+		\State \# is no longer tight
+		\State remove $(u, v_1)$ from $M$
+		\State \textbf{continue} algorithm as usual, searching for an augmenting path
+	\EndIf
 	\end{algorithmic}
-	\item Hi, an analysis of the above
+	\item If $m$ is the edges and $n$ is the vertices, ...
 	\end{enumerate}
 \end{enumerate}
 \end{document}
