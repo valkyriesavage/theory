@@ -61,7 +61,7 @@
 	\If{$(u,v) \in M$}
 		\Return
 	\Else
-		\State find $(u, v_1) \in M$ where $p(u) + p(v_1) > (u, v_1)$
+		\State \textbf{find} $(u, v_1) \in M$ where $p(u) + p(v_1) > (u, v_1)$
 		\State \# this must exist because we raised the price on $u$,
 		\State \# so some edge in the matching,
 		\State \# which does match $u$ because it is perfect,
@@ -70,7 +70,7 @@
 		\State \textbf{continue} algorithm as usual, searching for an augmenting path
 	\EndIf
 	\end{algorithmic}
-	\item If $m$ is the edges and $n$ is the vertices, ...
+	\item If $m$ is the edges and $n$ is the vertices, then no.  Given that the last line says ``continue algorithm as usual'', we get the same runtime as the ``algorithm as usual'', which is to say $O(n^2 m)$ for the algorithm discussed in class.  Our piece for solving when we increase an edge weight by $\delta$ adds a complexity of $O(n/2)$ because we check all the edges leading to all the vertices in $V$ to determine which one is matched before dropping it from the matching, but as usual this term is ignored because the $O(n^2 m)$ term is much larger.
 	\end{enumerate}
 \end{enumerate}
 \end{document}
