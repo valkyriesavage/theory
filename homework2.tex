@@ -44,7 +44,7 @@
         		edge node [left]  {$\frac{1}{2}$} (C)
     		(C) edge node [right] {$\frac{1}{2}$} (D);
 		\end{tikzpicture}\\
-	\item This problem is very similar to proving the toll problem is the lower bound on the optimal solution to the path routing problem, so we will use similar conventions: $p_{ij}$ is a flow connecting $(s_i, t_i)$, and we will let the set of all such flows be $P_i = \{p_{ij}\}$.  $c(e)$ is the congestion on edge $e$ under the routing, being in this case the sum of the fractional path flows using that edge.  The length of $p_{ij}$ is $d(p_{ij})$.  Let the fractional flow of $p_ij$ equal $f_ij$.  We proceed as in the integral problem, but the crux is that the lengths of the edges in a path do not necessarily add up to $1$: however, the sum of all the paths $p_{ij}$ connecting $(s_i, t_i)$ does.
+	\item This problem is very similar to proving the toll problem is the lower bound on the optimal solution to the path routing problem, so we will use similar conventions: $p_{ij}$ is a flow connecting $(s_i, t_i)$, and we will let the set of all such flows be $P_i = \{p_{ij}\}$.  $c(e)$ is the congestion on edge $e$ under the routing, being in this case the sum of the fractional path flows using that edge.  The length of $p_{ij}$ is $d(p_{ij})$.  Let the fractional flow of $p_{ij}$ equal $f_{ij}$.  We proceed as in the integral problem, but the crux is that the lengths of the edges in a path do not necessarily add up to $1$: however, the sum of all the paths $p_{ij}$ connecting $(s_i, t_i)$ does.
 		\begin{align*}
 			max_{e \in E} c(e) & \geq \sum_{e \in E} c(e) d(e) \\
 			&= \sum_{e \in E} d(e) \sum_{i} \sum_{j:p_{ij} \ni e} f_{ij} \\
@@ -55,6 +55,7 @@
 			&\geq \sum_{i} min_{j} d(p_{ij}) \\
 			&= \sum_{i} d(s_i, t_i) \\
 		\end{align*}
+		Thus the toll problem is a lower bound on the fractional flow routing problem.
 	\end{enumerate}
 \item Equilibrium - pondered and completed but not written up.
 \item Maximum weight matching vs. minimum weight vertex cover
