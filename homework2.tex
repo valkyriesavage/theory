@@ -44,12 +44,16 @@
         		edge node [left]  {$\frac{1}{2}$} (C)
     		(C) edge node [right] {$\frac{1}{2}$} (D);
 		\end{tikzpicture}\\
-	\item This problem is very similar to proving the toll problem is the lower bound on the optimal solution to the path routing problem, so we will use similar conventions: $p_{ij}$ is a flow connecting $(s_i, t_i)$.  $c(e)$ is the congestion on edge $e$ under the routing.  The length of $p_{ij}$ is $d(p_{ij})$.  We proceed as in the integral problem, but the crux is that the lengths of the edges in a path do not necessarily add up to $1$: however, the sum of all the paths $p_{ij}$ connecting $(s_i, t_i)$ does.
+	\item This problem is very similar to proving the toll problem is the lower bound on the optimal solution to the path routing problem, so we will use similar conventions: $p_{ij}$ is a flow connecting $(s_i, t_i)$, and we will let the set of all such flows be $P_i = \{p_{ij}\}$.  $c(e)$ is the congestion on edge $e$ under the routing, being in this case the sum of the fractional path flows using that edge.  The length of $p_{ij}$ is $d(p_{ij})$.  Let the fractional flow of $p_ij$ equal $f_ij$.  We proceed as in the integral problem, but the crux is that the lengths of the edges in a path do not necessarily add up to $1$: however, the sum of all the paths $p_{ij}$ connecting $(s_i, t_i)$ does.
 		\begin{align*}
-			\sum_{i}^{} \sum_{j}^{} d(p_{ij}) &= \sum_{i}^{} \sum_{j}^{} \sum_{e \in p_{ij}}^{} d(e) \\
-			&= \sum_{e}^{} \sum_{i,j:e \in p_{ij}}^{} d(e) \\
-			&= \sum_{e}^{} d(e) \sum_{i,j:e \in p_{ij}}^{} 1 \\
-			&= \sum_{e}^{} d(e)c(e)
+			max_{e \in E} c(e) & \geq \sum_{e \in E} c(e) d(e) \\
+			&= \sum_{e \in E} d(e) \sum_{i} \sum_{j:p_{ij} \ni e} f_{ij} \\
+			&= \sum_{e \in E} \sum_{i} \sum_{j:p_{ij} \ni e} f_{ij} d(e) \\
+			&= \sum_{i} \sum_{j} \sum_{e \in p_{ij}} f_{ij} d(e) \\
+			&= \sum_{i} \sum_{j} f_{ij} \sum_{e \in p_{ij}} d(e) \\
+			&= \sum_{i} \sum_{j} f_{ij} d(p_{ij}) \\
+			&\geq \sum_{i} min_{j} d(p_{ij}) \\
+			&= \sum_{i} d(s_i, t_i) \\
 		\end{align*}
 	\end{enumerate}
 \item Equilibrium - pondered and completed but not written up.
