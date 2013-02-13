@@ -60,31 +60,18 @@
 \item Equilibrium - pondered and completed but not written up.
 \item Maximum weight matching vs. minimum weight vertex cover
 	\begin{enumerate}
-	\item Given $M$ a solution to the maximum weight matching problem and $p(\cdot)$ a solution to the minimum price vertex cover: $M=p(\cdot)$ iff the edges in the matching are tight, the price function is feasible, and there is a perfect matching.  All of these are satisfied, $\therefore M=p(\cdot)$.  When we increase the weight of an edge $(u,v)$ in our bipartite graph by $\delta$...
-	\begin{algorithmic}
-	\State $p(u) \gets p(u) + \delta$
-	\If{$(u,v) \in M$}
-		\Return
-	\Else
-		\State \textbf{global} $Q$ a priority queue
-		\State \Call{adjust}{$u, \delta$}
-		\State \textbf{for} $e \in $
-	\EndIf
-	\Procedure {adjust}{$u, \delta$}
-		\If{$\delta = 0$}
-			\Return
-		\EndIf
-		\State $(u, v)$ the matched edge leading from u to V
-		\State $p(v) \gets p(v) - \delta$
-		\State $e(v)$ the set of edges connecting to $v_1$
-		\State insert $e(v)$ in $Q$ with most infeasible edge at front
-		\State $(u_i, v) = Q.pop()$
-		\State $\epsilon (\leq \delta) \gets w(u_i, v) - (p(u_i) + p(v))$
-		\State $p(u_i) \gets p(u_i) + \epsilon$
-		\State \Call{adjust}{$u_i, \epsilon$} 
-	\EndProcedure
-	\end{algorithmic}
-	\item Given $m$ the edges and $n$ the vertices, the runtime of this algorithm is $O(mlogn)$.  We traverse each edge in the graph at most once, and we maintain the priority queue of the most infeasible edges.
+	\item Given $M$ a solution to the maximum weight matching problem and $p(\cdot)$ a solution to the minimum price vertex cover: $M=p(\cdot)$ iff the edges in the matching are tight, the price function is feasible, and there is a perfect matching.  All of these are satisfied, $\therefore M=p(\cdot)$.  When we increase the weight of an edge $(u,v)$ in our bipartite graph by $\delta$, we begin by adjusting $p(u)$ to $p(u) + \delta$.  If $(u,v) \in M$, then we are done.
+
+	Otherwise, we have made one edge in our matching not tight.  Let this edge be $(u,v_1)$.  We adjust $p(v_1)$ to $p(v_1) - \delta$ to keep it tight.  Now we may have made one or more edges infeasible.
+
+	We will maintain a global priority queue $Q$ containing edges in order of most infeasible to least infeasible.  We start at $v_1$, and put all edges $(u_i,v_1) : u_i \neq u$ in $Q$.  We pull the first edge, $(u_i,v_1)$ off $Q$ and adjust $p(u_i)$ to $p(u_i) + \epsilon$, where $\epsilon$ is the minimum adjustment we need to make to make the edge feasible.  Also note that $\epsilon \leq \delta$, and since we are maintaining our $Q$ in feasibility order we will eventually get to $\epsilon = 0$.
+
+	We continue, since we have again made edges in our matching not tight, and then we adjust again to make edges feasible.  When we arrive at a vertex $v_j : (u, v_j) \in E$, we have made a cycle.  We flip all edges traversed in this cycle: that is, edges that were not matched previously are matched, and edges that were matched previously are no longer matched.  On the other hand, when we arrive at a vertex $v_k$ where $\forall u_i, (u_i, v_k) \in E, p(u_i) + p(v_k) = w(u_i, v_k)$, we have reached an end and do not need to flip the edges we adjusted along the way.
+
+	In either case, then we return to $Q$, and pull off the next most infeasible edge, wherever it is.  We continue thusly until $Q$ is empty, in which case we are done.
+
+Given $m$ the edges and $n$ the vertices, the runtime of this algorithm is $O(mlogm)$.  We traverse each edge in the graph at most once (thanks to our handy priority queue) which is $O(m)$, and we maintain the priority queue of the most infeasible edges which is $O(logm)$.
+	\item We can apply the above algorithm to the entire matching problem by starting with 0-weight edges everywhere and some arbitrary matching (as long as it is perfect).  We can then increase the weight of one edge at a time to the correct weight, running our algorithm each time.  In this case, the running of our algorithm would be $O(m^2logn)$ for the full matching problem.
 	\end{enumerate}
 \end{enumerate}
 \end{document}
