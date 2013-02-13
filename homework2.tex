@@ -60,22 +60,31 @@
 \item Equilibrium - pondered and completed but not written up.
 \item Maximum weight matching vs. minimum weight vertex cover
 	\begin{enumerate}
-	\item Given $M$ a solution to the maximum weight matching problem and $p(\cdot)$ a solution to the minimum price vertex cover: $M=p(\cdot)$ iff the edges in the matching are tight and there is a perfect matching.  Both of these are satisfied, $\therefore M=p(\cdot)$.  When we increase the weight of an edge $(u,v)$ in our bipartite graph by $\delta$...
+	\item Given $M$ a solution to the maximum weight matching problem and $p(\cdot)$ a solution to the minimum price vertex cover: $M=p(\cdot)$ iff the edges in the matching are tight, the price function is feasible, and there is a perfect matching.  All of these are satisfied, $\therefore M=p(\cdot)$.  When we increase the weight of an edge $(u,v)$ in our bipartite graph by $\delta$...
 	\begin{algorithmic}
 	\State $p(u) \gets p(u) + \delta$
 	\If{$(u,v) \in M$}
 		\Return
 	\Else
-		\State \textbf{find} $(u, v_1) \in M$ where $p(u) + p(v_1) > (u, v_1)$
-		\State \# this must exist because we raised the price on $u$,
-		\State \# so some edge in the matching,
-		\State \# which does match $u$ because it is perfect,
-		\State \# is no longer tight
-		\State remove $(u, v_1)$ from $M$
-		\State \textbf{continue} algorithm as usual, searching for an augmenting path
+		\State \textbf{global} $Q$ a priority queue
+		\State \Call{adjust}{$u, \delta$}
+		\State \textbf{for} $e \in $
 	\EndIf
+	\Procedure {adjust}{$u, \delta$}
+		\If{$\delta = 0$}
+			\Return
+		\EndIf
+		\State $(u, v)$ the matched edge leading from u to V
+		\State $p(v) \gets p(v) - \delta$
+		\State $e(v)$ the set of edges connecting to $v_1$
+		\State insert $e(v)$ in $Q$ with most infeasible edge at front
+		\State $(u_i, v) = Q.pop()$
+		\State $\epsilon (\leq \delta) \gets w(u_i, v) - (p(u_i) + p(v))$
+		\State $p(u_i) \gets p(u_i) + \epsilon$
+		\State \Call{adjust}{$u_i, \epsilon$} 
+	\EndProcedure
 	\end{algorithmic}
-	\item If $m$ is the edges and $n$ is the vertices, then no.  Given that the last line says ``continue algorithm as usual'', we get the same runtime as the ``algorithm as usual'', which is to say $O(n^2 m)$ for the algorithm discussed in class.  Our piece for solving when we increase an edge weight by $\delta$ adds a complexity of $O(n/2)$ because we check all the edges leading to all the vertices in $V$ to determine which one is matched before dropping it from the matching, but as usual this term is ignored because the $O(n^2 m)$ term is much larger.
+	\item Given $m$ the edges and $n$ the vertices, the runtime of this algorithm is $O(mlogn)$.  We traverse each edge in the graph at most once, and we maintain the priority queue of the most infeasible edges.
 	\end{enumerate}
 \end{enumerate}
 \end{document}
