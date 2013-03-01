@@ -15,14 +15,31 @@
 \begin{enumerate}
 \item Adversary Arguments
 	\begin{enumerate}
-	\item
+	\item We can determine an upper bound on the expected loss using the function derived in class.  For the purposes of this example, $L^*=\frac{T}{2}$ (that is, the best expert is wrong on at most half the days), $n=2$, $\epsilon = .5$, so we have
+		\begin{align*}
+			L &\leq \frac{ln n}{\epsilon} + (1 + \epsilon) L^* \\
+			&\leq \frac{ln n}{.5} + (1 + .5)\frac{T}{2} \\
+			&\leq 2 ln n + \frac{3T}{4}
+		\end{align*}
 	\item 
+		\begin{align*}
+			L &\leq \frac{ln n}{\epsilon} + (1 + \epsilon) L^* \\
+			&\leq \frac{ln n}{\epsilon} + (1 + \epsilon)\frac{T}{2}
+		\end{align*}
 	\end{enumerate}
 \item Multiplicative weights algorithm
+The translated and scaled game payoff matrix for the Rock-Paper-Scissors-Cheat game described is as follows:
+\[ \begin{array}{ccc}
+0.5 & 1 & 0 \\
+0 & 0.5 & 1 \\
+1 & 0 & 0 \\
+0.5 & 0 & 0 \end{array} \]\\
+Note that for the following I am 0-indexing the days. \\
+The game strategy for day 10 :: $R = [.253, .329, .166, .253], C = [.727, .091, .182]$.  This is in $\delta$ equilibrium for $\delta = .213$.\\
+The game strategy for day 100 :: $R = [.173, .326, .005, .497], C = [.604, .099, .297]$.  This is in $\delta$ equilibrium for $\delta = .050$.\\
+The game strategy for day $\lceil 100 ln 4 \rceil$ :: $R = [.159, .333, .001, .507], C = [.621, .079, .3]$.  This is in $\delta$ equilibrium for $\delta = .041$.\\
 \item Games and Application
-\item Investing in Instruments
-	\begin{enumerate}
-	\item adversary!  at time T-P the instrument must have made at least \$1.
-	\end{enumerate}
+\item Investing in Instruments \\
+Let there be an adversary who is arranging the stockmarket against the deterministic investor.  The adversary knows the conditions under which a deterministic player will invest in a particular instrument, so he fulfills those conditions with at least one instrument $I$ and then causes that instrument to stop producing gains once invested in.  Since he is fulfilling the anticipated conditions with \emph{at least} one instrument, he need not violate the condition that at least one instrument earns at least $P$ dollars over $T$ days.
 \end{enumerate}
 \end{document}
