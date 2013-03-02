@@ -129,5 +129,6 @@ def mult_weights_two_person_game(G, T, epsilon):
 
     
 rock_paper_scissors = np.array([[0.0,1,-1],[-1,0,1],[1,-1,0],[0,-1,-1]])
+cheat = np.array([[0.0,1,-1],[-1,0,1],[1,-1,0],[0,0,-1]])
 
 mult_weights_two_person_game(scale_matrix(rock_paper_scissors),140,.1)

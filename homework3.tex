@@ -15,19 +15,20 @@
 \begin{enumerate}
 \item Adversary Arguments
 	\begin{enumerate}
-	\item We can determine an upper bound on the expected loss using the function derived in class.  For the purposes of this example, $L^*=\frac{T}{2}$ (that is, the best expert is wrong on at most half the days), $n=2$, $\epsilon = .5$, so we have
+	\item We can determine an upper bound on the expected loss using the function derived in class.  For the purposes of this example, $L^*=\lfloor \frac{T}{2} \rfloor \leq \frac{T}{2}$ (that is, the best expert is wrong on at most half the days), $n=2$, $\epsilon = .5$, so we have
 		\begin{align*}
-			L &\leq \frac{ln n}{\epsilon} + (1 + \epsilon) L^* \\
-			&\leq \frac{ln n}{.5} + (1 + .5)\frac{T}{2} \\
-			&\leq 2 ln n + \frac{3T}{4}
+			L &\leq \frac{\ln n}{\epsilon} + (1 + \epsilon) L^* \\
+			&\leq \frac{\ln n}{.5} + (1 + .5)\frac{T}{2} \\
+			&\leq 2 \ln n + \frac{3T}{4}
 		\end{align*}
-	\item 
+	\item We showed in class that $L \leq \frac{\ln n}{\epsilon} + (1 + \epsilon) L^*$ functions as an upper bound for expected loss in this framework.  As described above, the best expert's loss is $\lfloor \frac{T}{2} \rfloor \leq \frac{T}{2}$ because the experts alternate days being correct.
 		\begin{align*}
-			L &\leq \frac{ln n}{\epsilon} + (1 + \epsilon) L^* \\
-			&\leq \frac{ln n}{\epsilon} + (1 + \epsilon)\frac{T}{2}
+			L &\leq \frac{\ln n}{\epsilon} + (1 + \epsilon) L^* \\
+			&\leq \frac{\ln n}{\epsilon} + (1 + \epsilon) \frac{T}{2}
 		\end{align*}
 	\end{enumerate}
 \item Multiplicative weights algorithm
+I assert that I ``basically understand'' the code included with the homework, as requested.
 The translated and scaled game payoff matrix for the Rock-Paper-Scissors-Cheat game described is as follows:
 \[ \begin{array}{ccc}
 0.5 & 1 & 0 \\
@@ -38,8 +39,29 @@ Note that for the following I am 0-indexing the days. \\
 The game strategy for day 10 :: $R = [.253, .329, .166, .253], C = [.727, .091, .182]$.  This is in $\delta$ equilibrium for $\delta = .213$.\\
 The game strategy for day 100 :: $R = [.173, .326, .005, .497], C = [.604, .099, .297]$.  This is in $\delta$ equilibrium for $\delta = .050$.\\
 The game strategy for day $\lceil 100 ln 4 \rceil$ :: $R = [.159, .333, .001, .507], C = [.621, .079, .3]$.  This is in $\delta$ equilibrium for $\delta = .041$.\\
-\item Games and Application
+\item Games and Application \\
+Given a graph $G = (V, E)$ set of k pairs of terminals ${(s_0, t_0), ..., (s_{k-1}, t_{k-1})}$ we want to establish an approximate solution to the fractional path routing problem.  Let $m = |E|$ be the number of edges.  We are assuming $k \leq n$.  Let $T \geq \frac{8k \ln n}{\epsilon^2}$ for some $\epsilon$.  We create a game matrix in the experts framework with $m$ rows, one for each edge, and $T$ columns.\\
+Each day, we will select at random one terminal pair $(s_i, t_i)$ to route.  We will select the shortest path for this terminal pair and record it in the table.  Then we update the tolls.  We will assume for the sake of cleanliness that the total amount of toll being placed on all the edges in $E$ totals $1$.  Therefore, since we are routing only one path per day and we have just one unit of toll, the total gain per day $G_t \leq 1$.  This means that $\mu$ and $\sigma ^2$ for $G_t \leq 1 \leq k$.  (Note that $\sigma ^2 = E[(x-E[x])^2] \leq E[(1 - 0) ^ 2] = 1 \leq k$.)\\
+Since we are choosing which path to route at random, from \textbf{lemma 1} we know that each pair $(s_i, t_i)$ will be routed $\frac{T}{k}(1 \pm \epsilon)$ times with probability $P \geq 1 - \frac{1}{k}$.\\
+Also note that we satisfy the requirements to \textbf{lemma 2}. \\
+So, we will start from the expert's framework.\\
+	\begin{align*}
+		G &\geq G^*(1-\epsilon)-\frac{\ln n}{\epsilon}\\
+		\epsilon E(G) \geq G - E(G) &\geq G^* (1-\epsilon) - \frac{\ln n}{\epsilon} - E(G) --- from lemma 2 \\
+		\frac{T(1+\epsilon)C^*}{k} \geq (1+\epsilon) E(G) &\geq G^*(1-\epsilon)- \frac{\ln n}{\epsilon} \\
+		\frac{T(1+\epsilon)C^*}{k} &\geq \frac{TC_{max}}{k}(1-\epsilon) - \frac{\ln n}{\epsilon} \\
+		T(1+\epsilon)C^* &\geq TC_{max} (1-\epsilon) - \frac{k \ln n}{\epsilon} \\
+		\frac{k \ln n}{\epsilon} &\geq (C_{max}(1-\epsilon) - (1+\epsilon)C^*)\frac{8k \ln n} {\epsilon ^2} \\
+		1 + \frac{8(1+\epsilon )C^*}{\epsilon} &\geq \frac{8(1-\epsilon)C_{max}}{\epsilon} \\
+		\epsilon + 8(1+ \epsilon)C^* &\geq 8(1-\epsilon)C_{max} \\
+		C_{max} &\leq \frac{\epsilon + 8 (1 + \epsilon)}{8(1-\epsilon)}C^* \\
+		&\leq \frac{\epsilon + 8 + 8\epsilon}{8-8\epsilon}C^* \\
+		&\leq \frac{8 - 8\epsilon + 17\epsilon}{8-8\epsilon}C^* \\
+		&\leq (1 + \frac{17\epsilon}{8-8\epsilon})C* \\
+	\end{align*}
+So if we let $\delta = (1 + \frac{17\epsilon}{8-8\epsilon})$, we have a $(1+ \delta)$ optimal fractional path routing.
 \item Investing in Instruments \\
-Let there be an adversary who is arranging the stockmarket against the deterministic investor.  The adversary knows the conditions under which a deterministic player will invest in a particular instrument, so he fulfills those conditions with at least one instrument $I$ and then causes that instrument to stop producing gains once invested in.  Since he is fulfilling the anticipated conditions with \emph{at least} one instrument, he need not violate the condition that at least one instrument earns at least $P$ dollars over $T$ days.
+Let there be an adversary who is arranging the stockmarket against the deterministic investor (who has published his deterministic algorithm in a theory paper).  The adversary knows the conditions under which a deterministic player will invest in a particular instrument, so he fulfills those conditions with at least one instrument $I$ and then causes that instrument to stop producing gains once invested in.  The investing player cannot change his mind once he has invested in that instrument, and therefore makes a gain over the remaining days of \$0.  Since the adversary is fulfilling the anticipated conditions with \emph{at least} one instrument, he need not violate the condition that at least one instrument earns at least $P$ dollars over $T$ days.\\
+For example, let $n=2,T=1,P=1$.  If the adversary knows that the deterministic investor will choose instrument $I$, he will select the other instrument $J$ to gain \$1 on the single day of the game and $I$ to gain \$0.  In this way, the determinstic investor fails.
 \end{enumerate}
 \end{document}
