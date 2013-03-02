@@ -7,7 +7,7 @@
 \usepackage{algpseudocode}
 
 \title{CS270 Homework 3}
-\author{Valkyrie Savage}
+\author{Valkyrie Savage \thanks{Shiry, Mitar, Orianna, Peggy, Christos}}
 
 \begin{document}
 \maketitle
@@ -41,8 +41,8 @@ The game strategy for day 100 :: $R = [.173, .326, .005, .497], C = [.604, .099,
 The game strategy for day $\lceil 100 ln 4 \rceil$ :: $R = [.159, .333, .001, .507], C = [.621, .079, .3]$.  This is in $\delta$ equilibrium for $\delta = .041$.\\
 \item Games and Application \\
 Given a graph $G = (V, E)$ set of k pairs of terminals ${(s_0, t_0), ..., (s_{k-1}, t_{k-1})}$ we want to establish an approximate solution to the fractional path routing problem.  Let $m = |E|$ be the number of edges.  We are assuming $k \leq n$.  Let $T \geq \frac{8k \ln n}{\epsilon^2}$ for some $\epsilon$.  We create a game matrix in the experts framework with $m$ rows, one for each edge, and $T$ columns.\\
-Each day, we will select at random one terminal pair $(s_i, t_i)$ to route.  We will select the shortest path for this terminal pair and record it in the table.  Then we update the tolls.  We will assume for the sake of cleanliness that the total amount of toll being placed on all the edges in $E$ totals $1$.  Therefore, since we are routing only one path per day and we have just one unit of toll, the total gain per day $G_t \leq 1$.  This means that $\mu$ and $\sigma ^2$ for $G_t \leq 1 \leq k$.  (Note that $\sigma ^2 = E[(x-E[x])^2] \leq E[(1 - 0) ^ 2] = 1 \leq k$.)\\
-Since we are choosing which path to route at random, from \textbf{lemma 1} we know that each pair $(s_i, t_i)$ will be routed $\frac{T}{k}(1 \pm \epsilon)$ times with probability $P \geq 1 - \frac{1}{k}$.\\
+Each day, we will select at random one terminal pair $(s_i, t_i)$ to route.  We will select the shortest path for this terminal pair and record it in the table.  Then we update the tolls.  This is a factor of $k$ less work than we are doing in the traditional algorithm each day, and we run for an asymptotically equal number of days.  Therefore, we are reducing the runtime to $O(km\frac{log^2 M}{\epsilon ^ 2})$.  We will assume for the sake of cleanliness that the total amount of toll being placed on all the edges in $E$ totals $1$.  Therefore, since we are routing only one path per day and we have just one unit of toll, the total gain per day $G_t \leq 1$.  This means that $\mu$ and $\sigma ^2$ for $G_t \leq 1 \leq k$.  (Note that $\sigma ^2 = E[(x-E[x])^2] \leq E[(1 - 0) ^ 2] = 1 \leq k$.)\\
+Since we are choosing which path to route at random, from \textbf{lemma 1} we know that each pair $(s_i, t_i)$ will be routed $\frac{T}{k}(1 \pm \epsilon)$ times with probability $P \geq 1 - \frac{1}{k}$.  We know also that over all the days, $G = C^*$.  Therefore for each day's single path we have approximately $E[G_t] = \frac{C^*}{k}$.\\
 Also note that we satisfy the requirements to \textbf{lemma 2}. \\
 So, we will start from the expert's framework.\\
 	\begin{align*}
@@ -57,9 +57,9 @@ So, we will start from the expert's framework.\\
 		C_{max} &\leq \frac{\epsilon + 8 (1 + \epsilon)}{8(1-\epsilon)}C^* \\
 		&\leq \frac{\epsilon + 8 + 8\epsilon}{8-8\epsilon}C^* \\
 		&\leq \frac{8 - 8\epsilon + 17\epsilon}{8-8\epsilon}C^* \\
-		&\leq (1 + \frac{17\epsilon}{8-8\epsilon})C* \\
+		&\leq (1 + \frac{17\epsilon}{8-8\epsilon})C^* \\
 	\end{align*}
-So if we let $\delta = (1 + \frac{17\epsilon}{8-8\epsilon})$, we have a $(1+ \delta)$ optimal fractional path routing.
+So if we let $\delta = (1 + \frac{17\epsilon}{8-8\epsilon})$, we have a $(1+ \delta)$ approximation of optimal fractional path routing.
 \item Investing in Instruments \\
 Let there be an adversary who is arranging the stockmarket against the deterministic investor (who has published his deterministic algorithm in a theory paper).  The adversary knows the conditions under which a deterministic player will invest in a particular instrument, so he fulfills those conditions with at least one instrument $I$ and then causes that instrument to stop producing gains once invested in.  The investing player cannot change his mind once he has invested in that instrument, and therefore makes a gain over the remaining days of \$0.  Since the adversary is fulfilling the anticipated conditions with \emph{at least} one instrument, he need not violate the condition that at least one instrument earns at least $P$ dollars over $T$ days.\\
 For example, let $n=2,T=1,P=1$.  If the adversary knows that the deterministic investor will choose instrument $I$, he will select the other instrument $J$ to gain \$1 on the single day of the game and $I$ to gain \$0.  In this way, the determinstic investor fails.
