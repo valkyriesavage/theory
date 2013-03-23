@@ -71,6 +71,13 @@
 				A &> b
 			\end{align}
 			Given this, we can construct some $x$ ( $< 0$ ) s.t. $Ax \leq b$.
+
+			Now, if we assume that i is not true, we can show that ii is true.  If i is not true, then $Ax > b \forall x$.  So then
+			\begin{align}
+				Ax > b\\
+				y^TAx > y^Tb
+			\end{align}
+			Now it remains to construct some y s.t. $y^TAx = 0$, $y^Tb < 0$, which is possible given that $y^TAx > y^Tb$.
 	\end{enumerate}
 
 \item Facility Location
@@ -80,7 +87,7 @@
 			\begin{align}
 				\frac{\Delta_i}{f_i} &\geq \frac{C' - C}{F} \\
 				f_i &\leq \frac{\Delta_i F}{C' - C} \\
-				facility-total = f_i - \Delta_i &\leq \frac{\Delta_i F}{C' - C} - \Delta_i
+				facilitytotal = f_i - \Delta_i &\leq \frac{\Delta_i F}{C' - C} - \Delta_i
 			\end{align}
 			Now we want to integrate, since we can consider adding facilities to approach C from C'.  We want to do this in as large of steps as possible for as long as possible, but will eventually consider infinitesimally small steps.  We consider our integration bounds : we want to start at $F+C$ (the optimal) and go to what we currently have, which is $2F+3C$.
 			\begin{align}
@@ -91,7 +98,21 @@
 				= F + C plus (1+\ln\frac{2F + 2C}{F})
 			\end{align}
 			Which is the desired solution.
-		\item consider the distances 1 or 3
+		\item We are considering a special case of the facility problem in which we have only distances of 1 or 3.  We will use an algorithm by which we open each facility $j$ with a probability $y_j$.  Once we have opened each facility, we look at all clients.  We assign each client to an open facility at distance 1 where, for client $i$ and facility $j$, $x_{ij} > 0$, at random.
+
+	Let $N_c$ be the number of clients, that is, $N_c = \sum_{j=1} 1 \leq C$, where $C$ is the optimal connection cost.  The probability that we don't open any facilities for client $i$ is $P(nofaciltiies) = \Pi_{j, x_{ij} > 0}{(1-y_j)}$.  The expected value for client $i$'s connection cost is $\tilde{C}(i) = \sum_{open j} \frac{1}{n_{ij}}d_{ij} = \frac{1}{n_i}\sum_{open j}d_{ij}$, where $n_i$ is the number of facilities in range 1 of client $i$ which have been opened.  The chance that we open a facility at distance 3, rather than a facility at distance 1, is $(1 - \frac{1}{e})$, because we know that $\sum x_{ij} = 1$, and therefore
+	\begin{align}
+		\Pi_{i, x_{ij} >0}(1-x_{ij}) \leq \frac{1}{e}
+	\end{align}
+	So, using that, we can just plug things in to get our expected value across all clients.
+	\begin{align}
+		\sum_i (1 - \frac{1}{e}) \tilde{C}(i) + \frac{1}{e}3 \\
+		\leq \sum_i (1-\frac{1}{e})C(i) + \frac{3}{e} \\
+		\leq C(1 - \frac{1}{e}) + \frac{3}{e}C \\
+		= C - \frac{C}{e} + \frac{3C}{e} \\
+		= C + \frac{2C}{e} \\
+		= C(1 + \frac{2}{e})
+	\end{align}
 	\end{enumerate}
 
 \item Using the second moment calculation algorithms from class, we can get the following values:
@@ -114,6 +135,16 @@
 		= f_r(a)f_s(a) \pm \epsilon( f_r(a)f_s(a) + f_r(a)^2 + f_s(a)^2 )
 	\end{align}
 \item Project description \\
-	Working with Mitar to analyze/illustrate multi-way voting algorithms.
+	We designed a voting schema which allows a group of people to better decide on a common opinion about an issue. Currently,
+the most used approach is to simply count number of votes against and for, while not taking into account people who do
+not cast a vote. Our approach is to have each person define delegates whose votes will be counted when he/she does not
+vote him/herself. In this way we get a social network, a trust network, between users which can be
+used to transitively compute missing votes. We believe such a result better represents the will of the group.
+
+In the course of the project, we want to compare it with some other similar voting schemas with delegation. We want to visualize
+our approach and possibly find a way to visualize differences to other schemas. We will analyze the algorithm for computing the
+results according to our voting schema.
+
+On the project I will be working with Mitar Milutinovi\'c.
 \end{enumerate}
 \end{document}
