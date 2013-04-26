@@ -15,7 +15,7 @@
 \begin{enumerate}
 \item Short Answer
 	\begin{enumerate}
-		\item The optimal fractional routing solution to the path problem is $\frac{1}{2} + \frac{1}{2} + \frac{1}{3} = \frac{4}{3}$ on each edge (max flow is $\frac{4}{3}$), with  $\frac{1}{6}$ toll on each edge (such that the total collected is $\frac{4}{3} \times \frac{1}{6} \times 6 = \frac{4}{3}$).  We accomplish this by splitting the flow from 1 to 2 into two half-flows that go 1-4-2 and 1-5-2, the flow from 2 to 3 into two half-flows that go from 2-4-3 and 2-5-3 and the flow from 3 to 1 into two half flows from 3-4-1 and 3-5-1.  The flow from 4 to 5 is split into 3 1/3 flows  4-1-5 , 4-2-5 , and 4-3-5.
+		\item The optimal fractional routing solution to the path problem is $\frac{1}{2} + \frac{1}{2} + \frac{1}{3} = \frac{4}{3}$ on each edge (max flow is $\frac{4}{3}$), with  $\frac{1}{6}$ toll on each edge (such that the total collected is $\frac{4}{3} \times \frac{1}{6} \times 6 = \frac{4}{3}$, proof of optimality).  We accomplish this by splitting the flow from 1 to 2 into two half-flows that go 1-4-2 and 1-5-2, the flow from 2 to 3 into two half-flows that go from 2-4-3 and 2-5-3 and the flow from 3 to 1 into two half flows from 3-4-1 and 3-5-1.  The flow from 4 to 5 is split into 3 1/3 flows  4-1-5 , 4-2-5 , and 4-3-5.
 		\item The primal solution is to put $x_e = \frac{1}{2}$ on every outside edge with $x_e = 0$ on the two vertical interior edges.  This gives a weight $\sum_e w_e x_e$ of 4.
 		\item One option with the perceptron is to create a kernel that separates the nodes into some higher dimensional space with a large $\gamma$ angle separating +1 points from -1 points.  Another option is creating several perceptrons from subsets of the original data (such that $\gamma$ would be different for each) and having the set of them vote on each new point's classification: a (weighted) majority would win.  Basically we could shove the perceptron into the experts framework to improve our performance.
 		\item The dual of $Ax \geq b, \min cx$ is not nice.  There is nothing to guard the transition of the $\geq$ in the dual if we aren't specifying that $x \geq 0$.  We have to split it into parts: $Ax \leq b, \min cx, x \geq 0$, whose dual is $y^TA \geq c, \max y^Tb, y\geq 0$, $Ax \leq b, \min cx, x \leq 0$ whose dual is $y^TA \geq c, \max y^Tb, y\leq 0$, and then the case where $x=0$, and then take $\min cx$ over all those parts.
@@ -25,7 +25,7 @@
 \item Experts
 	\begin{enumerate}
 		\item We cannot get expected loss within an additive value of $c\sqrt{T\log n}$ for some value of $c$.  This is because if the best expert makes no more than $\frac{T}{2} - \frac{\sqrt{T\log N}}{2}$ mistakes (with high probability in our random matrix), then we know that our loss is bounded by $(1+\epsilon)(\frac{T}{2} - \frac{\sqrt{T\log N}}{2}) + \frac{\ln n}{\epsilon}$, per the probabilistic experts framework analysis with multiplicative weights.  If we let $c=-(1+\epsilon)$, then we see that it's not possible for us to do better within an additive value.
-		\item We require at least $T = \Omega(\frac{\log N}{\epsilon ^2})$ days to achieve a factor of $(1+ \epsilon)$ of the best expert.   This is because....????  
+		\item We require at least $T = \Omega(\frac{\log N}{\epsilon ^2})$ days to achieve a factor of $(1+ \epsilon)$ of the best expert.   Since we are weighting experts we need to take into account how fast our weighting goes into effect; if the $\epsilon$ is small, then it takes a lot of time for us to stop listening to the worse experts (at its limit, this means that $\epsilon = 0$ and it takes us an infinite amount of time to perform with the best expert), and if it is large it takes less time.  For this second situation we have a second example, in the case where we throw away experts who are wrong on days when we are wrong, $\epsilon = 1$; it takes us at least $\log n$ days to throw away all the wrong experts and leave the single infallible expert.  The reason we have specifically $\frac{\log n}{\epsilon^2}$ is that each day that we're wrong (or any expert is wrong) we're moving a distance of $\epsilon^2$ closer to the best expert.
 	\end{enumerate}
 \item Short answer on eigenvalues and cuts
 	\begin{enumerate}
@@ -41,13 +41,21 @@
 			\end{enumerate}
 		\item Our graph will have $2kl$ nodes in it and be regular with degree $d = (\log_2{k} +1)2$.  Our optimal cut will be in half across the cycle, giving us $kl$ nodes on each side and severing $l$ edges for $h(G) = \frac{l}{(\log_2{k} +1)2kl} = \frac{1}{(\log_2{k} +1)2k}$.  We know that $\frac{\mu(G)}{2} \leq h(G) \leq \sqrt{2\mu(G)}$ from Cheeger, and ????
 	\end{enumerate}
-\item Correlated Points ????
+\item
 	\begin{enumerate}
-		\item expected value of entry
-		\item a lower bound is -\inf .  It is a very bad lower bound.
-		\item O(?)
-		\item d for reasonable probability
-		\item efficient correlation algo
+		\item The expected value of a non-diagonal entry with all non-correlated points is 0.
+		\item A lower bound of an absolute value for the entries containing the two correlated rows is $\Omega(kd/2)$.  Each of the $k-1$ other points in the correlated rows' point groups has chance $1/2$ of ``knocking out'' the correlated point's value at each of its $d$ entries, so we expect to have $\frac{d}{2^k}$ entities nonzero, where a given value's probability of not being knocked out is $\frac{1}{2^k}$.  We also have that number of nonzero entries for the correlated point in the other group, and the probability that at a given dimension neither point's value was cancelled out is $\frac{1}{2^{k+1}}$.  So we end up with a sum that is $\frac{d}{2^{k+1}}$, which is pretty damn small.
+		\item An asymptotic upper bound on the expected value of the square of an entry without correlated rows is  $O(d^2(1 - \frac{2\binom{d}{\frac{d}{2}}}{2^d})^2)$.  The probability that a given row's entry is non-zero after random summations is $1 - \frac{2\binom{d}{\frac{d}{2}}}{2^d}$ (because the total possible probability is 1 and we don't want to end up with d/2 points that are +1 and d/2 points which are -1, which can happen $\binom{d}{\frac{d}{2}}$ ways), so the squared sum across d of those would be expected to be $d^2(1 - \frac{2\binom{d}{\frac{d}{2}}}{2^d})^2$.
+		\item The distance between the max of the non-correlated rows' entries and the min of the correlated rows' entries is $answerc-answerb$.  The mean of the non-correlated rows' entries is $0$, and the probability that it is far from $0$ is $\leq e^{-t^2/4}$, where $t=??$ when we set $d=??$.  We want $d$ to be large compared to $k$ because that gives us the largest chance of not having the correlated points clobbered.  We want $n$ to be small because that makes it easy to find the points.
+		\item An ``efficient'' algorithm for this is the following, which runs in $O(ndk^3)$:
+			\begin{enumerate}
+				\item Put the input into a matrix ($O(nd)$)
+				\item Split the matrix at random into $k$ groups of $n/k$ rows each ($O(n)$)
+				\item Multiply each row in the groups by either 1 or -1 with equal probability and add them into group-rows ($O(nd)$)
+				\item Smash the group-rows into a matrix and multiply it by its transpose ($O(k^{2.5})$)
+				\item Examine half of all non-diagonal entries (since the other half will be the mirror, WLOG say it's the upper right half) for the largest absolute value ($O(k^2/2)$)
+				\item If the largest absolute value is larger than $answerc$, done.  If not, goto ii.  If you have already been to ii again, find pairs of pairs of group-rows (one pair of group-rows from your first run, one from your second run) that have high absolute values and at least one row in common, and call it a day.  ($O(k^2 \times k)$)
+			\end{enumerate}
 	\end{enumerate}
 \item The sparsity of a cut on a demand graph $K_{\lvert V \rvert}$ is $\frac{E(S,\bar{S})}{\lvert S \rvert \lvert \bar{S}\rvert}$.  The value of the multicommodity flow instance on $K_{\lvert V \rvert}$ is the solution to the mincut/maxflow problem on that graph.  The min cut of a graph is the smallest bottleneck that can be found in the graph, i.e. the smallest cut that would separate it into 2 or more pieces, i.e. the smallest $E(S, \bar{S})$ to separate the graph.  The size of the pieces is not really important to the $mincut$ algorithm in general, but since we are using it to route commodity flow between every pair of points the cut will be made to maximize the pairs that are separated, i.e. it will attempt to make a cut s.t. $\lvert S \rvert = \lvert \bar{S}\rvert$  Therefore the solution to the multicommodity flow problem on a graph gives a lower bound on its sparsity.
 \end{enumerate}
