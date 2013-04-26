@@ -1,0 +1,54 @@
+\documentclass[a4paper]{article}  
+
+\usepackage{mathtools}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{tikz}
+\usepackage{algpseudocode}
+
+\title{CS270 Midterm Exam}
+\author{Valkyrie Savage}
+
+\begin{document}
+\maketitle
+
+\begin{enumerate}
+\item Short Answer
+	\begin{enumerate}
+		\item The optimal fractional routing solution to the path problem is $\frac{1}{2} + \frac{1}{2} + \frac{1}{3} = \frac{4}{3}$ on each edge (max flow is $\frac{4}{3}$), with  $\frac{1}{6}$ toll on each edge (such that the total collected is $\frac{4}{3} \times \frac{1}{6} \times 6 = \frac{4}{3}$).  We accomplish this by splitting the flow from 1 to 2 into two half-flows that go 1-4-2 and 1-5-2, the flow from 2 to 3 into two half-flows that go from 2-4-3 and 2-5-3 and the flow from 3 to 1 into two half flows from 3-4-1 and 3-5-1.  The flow from 4 to 5 is split into 3 1/3 flows  4-1-5 , 4-2-5 , and 4-3-5.
+		\item The primal solution is to put $x_e = \frac{1}{2}$ on every outside edge with $x_e = 0$ on the two vertical interior edges.  This gives a weight $\sum_e w_e x_e$ of 4.
+		\item One option with the perceptron is to create a kernel that separates the nodes into some higher dimensional space with a large $\gamma$ angle separating +1 points from -1 points.  Another option is creating several perceptrons from subsets of the original data (such that $\gamma$ would be different for each) and having the set of them vote on each new point's classification: a (weighted) majority would win.  Basically we could shove the perceptron into the experts framework to improve our performance.
+		\item The dual of $Ax \geq b, \min cx$ is not nice.  There is nothing to guard the transition of the $\geq$ in the dual if we aren't specifying that $x \geq 0$.  We have to split it into parts: $Ax \leq b, \min cx, x \geq 0$, whose dual is $y^TA \geq c, \max y^Tb, y\geq 0$, $Ax \leq b, \min cx, x \leq 0$ whose dual is $y^TA \geq c, \max y^Tb, y\leq 0$, and then the case where $x=0$, and then take $\min cx$ over all those parts.
+		\item (ii) is always true from tightness, and (iv) is always true from algebra.
+		\item The points at which $\sum_{p \in S} (x \cdot p)l(p) = 0$ are the hyperplane.  The normal of this plane is $\arg\!\max_{x \in unit circle} \sum_{p \in S} (x \cdot p)l(p)$
+	\end{enumerate}
+\item Experts
+	\begin{enumerate}
+		\item We cannot get expected loss within an additive value of $c\sqrt{T\log n}$ for some value of $c$.  This is because if the best expert makes no more than $\frac{T}{2} - \frac{\sqrt{T\log N}}{2}$ mistakes (with high probability in our random matrix), then we know that our loss is bounded by $(1+\epsilon)(\frac{T}{2} - \frac{\sqrt{T\log N}}{2}) + \frac{\ln n}{\epsilon}$, per the probabilistic experts framework analysis with multiplicative weights.  If we let $c=-(1+\epsilon)$, then we see that it's not possible for us to do better within an additive value.
+		\item We require at least $T = \Omega(\frac{\log N}{\epsilon ^2})$ days to achieve a factor of $(1+ \epsilon)$ of the best expert.   This is because....????  
+	\end{enumerate}
+\item Short answer on eigenvalues and cuts
+	\begin{enumerate}
+		\item $\mu = \tilde{\Omega}(2-2log_T \frac{1}{4})$ because we know that $\frac{1}{4} \leq (\frac{1+\lambda_2}{2})^T$, assuming $\frac{1}{4}$ is the $l_2$ distance from uniform, from the analysis of random walks.
+		\item $\mu = O(2)$ : the worst possible case here is that the spectral gap is 2 (i.e. $\lambda_2=-1$ for a bipartite graph) which will always be distance "at least $\frac{1}{4}$" from the uniform distribution.
+		\item $\mu = \Omega(\frac{h(G)^2}{2})$
+		\item $\mu = O(1-2h(G))$
+		\item asymptotically tight bounds on $h(G)$ and $\mu$ for some graphs
+			\begin{enumerate}
+				\item $h(G) = O(\frac{n-1}{n}), \mu = ???$.  From Cheeger we can bound $\mu$ below by $\frac{2(n-1)^2}{n^2}$ and above by $\frac{2n-1}{n}$.  We know the spectral gap will be quite large because our graph is very well-connected.
+				\item $h(G) = O(\frac{1}{(\log_2{n} +1)n}), \mu = ???$, where the best cut is (naturally) the one edge joining the two cubes, and the graph is d-regular with $d = \log_2{n} +1$.  We know the spectral gap will be small because we bottleneck on that one edge.
+				\item $h(G) = O(\frac{4}{l^2k}), \mu = ???$, where the best cut is to cut the thing in half across the cycle.  From Cheeger we can bound $\mu$ below by $\frac{32}{l^4k}$ and above by $\frac{8}{l^2k}$, and we know the spectral gap will be small because our graph is quite poorly connected.
+			\end{enumerate}
+		\item Our graph will have $2kl$ nodes in it and be regular with degree $d = (\log_2{k} +1)2$.  Our optimal cut will be in half across the cycle, giving us $kl$ nodes on each side and severing $l$ edges for $h(G) = \frac{l}{(\log_2{k} +1)2kl} = \frac{1}{(\log_2{k} +1)2k}$.  We know that $\frac{\mu(G)}{2} \leq h(G) \leq \sqrt{2\mu(G)}$ from Cheeger, and ????
+	\end{enumerate}
+\item Correlated Points ????
+	\begin{enumerate}
+		\item expected value of entry
+		\item a lower bound is -\inf .  It is a very bad lower bound.
+		\item O(?)
+		\item d for reasonable probability
+		\item efficient correlation algo
+	\end{enumerate}
+\item The sparsity of a cut on a demand graph $K_{\lvert V \rvert}$ is $\frac{E(S,\bar{S})}{\lvert S \rvert \lvert \bar{S}\rvert}$.  The value of the multicommodity flow instance on $K_{\lvert V \rvert}$ is the solution to the mincut/maxflow problem on that graph.  The min cut of a graph is the smallest bottleneck that can be found in the graph, i.e. the smallest cut that would separate it into 2 or more pieces, i.e. the smallest $E(S, \bar{S})$ to separate the graph.  The size of the pieces is not really important to the $mincut$ algorithm in general, but since we are using it to route commodity flow between every pair of points the cut will be made to maximize the pairs that are separated, i.e. it will attempt to make a cut s.t. $\lvert S \rvert = \lvert \bar{S}\rvert$  Therefore the solution to the multicommodity flow problem on a graph gives a lower bound on its sparsity.
+\end{enumerate}
+\end{document}
